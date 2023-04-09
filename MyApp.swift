@@ -6,79 +6,97 @@ import SwiftUI
 @main
 struct MyApp: App {
     
-    @State var listOfTiles = Tiles().listOfTiles
-    @State var startPosition: Int = 19
+    //Import the game map
+    @State var levelListOfTiles = Level2().level2Map
     
-    let columns = [
-        GridItem(.flexible(minimum: 30, maximum: 150), spacing: 0),
-        GridItem(.flexible(minimum: 30, maximum: 150), spacing: 0),
-        GridItem(.flexible(minimum: 30, maximum: 150), spacing: 0),
-        GridItem(.flexible(minimum: 30, maximum: 150), spacing: 0),
-        GridItem(.flexible(minimum: 30, maximum: 150), spacing: 0),
-        GridItem(.flexible(minimum: 30, maximum: 150), spacing: 0),
-        GridItem(.flexible(minimum: 30, maximum: 150), spacing: 0),
-        GridItem(.flexible(minimum: 30, maximum: 150), spacing: 0),
-    ]
+    //Import game map dimensions
+    let levelColumns = Level2().level2Grid
+    
+    //Import the star position in the map
+    @State var startPosition: Int = Level2().level2StartPosition
+    
+    //Import the offset to move up and down
+    let levelOffset = Level2().upDownOffset
+    
+    
+    @State var endGameText: String = "voce ainda nao venceu"
+    
+    //Rename de map elements
+    let box: String = "📦"
+    let grass: String = "⬜️"
+    let person: String = "🙋🏿"
+    let wall: String = "⬛️"
+    let place: String = "🟨"
+    
+    
+    
+//MARK: main game function
     
     func defineMoviment(actualPosition: Int, offset: Int){
-        if listOfTiles[actualPosition + offset] == "x" {
-            listOfTiles.swapAt(actualPosition + offset, actualPosition)
+        //walking in free space
+        if levelListOfTiles[actualPosition + offset] == grass {
+            levelListOfTiles.swapAt(actualPosition + offset, actualPosition)
             startPosition = actualPosition + offset
+            defineMoviment(actualPosition: startPosition, offset: offset)
         }
-        else if listOfTiles[startPosition + offset] == "w" {
-            if listOfTiles[actualPosition + offset + offset] != "b"{
-                listOfTiles[actualPosition] = "x"
-                listOfTiles[actualPosition + offset] = "m"
-                listOfTiles[actualPosition + offset + offset] = "w"
+        //pushing a box
+        else if levelListOfTiles[startPosition + offset] == box {
+            if levelListOfTiles[actualPosition + offset + offset] != wall && levelListOfTiles[actualPosition + offset + offset] != box{
+                levelListOfTiles[actualPosition] = grass
+                levelListOfTiles[actualPosition + offset] = person
+                levelListOfTiles[actualPosition + offset + offset] = box
                 startPosition = actualPosition + offset
             }
         }
         else{
             print("nao consigo me mover")
         }
+       // isLevelCompleted(platesPosition: <#T##[Int]#>)
     }
+    
+//MARK: checking if the level is completed
+    
+    func isLevelCompleted(platesPosition: [Int]){
+        if (platesPosition.allSatisfy{levelListOfTiles[$0] == box}){
+            endGameText = "voce venceu"
+        }
+    }
+    
+//MARK: bulding the interface
     
     var body: some Scene {
         WindowGroup {
-            
-            ZStack{
-//                Image("bg")
-//                    .resizable()
-//                    .scaledToFill()
-//                    .edgesIgnoringSafeArea(.all)
-//                    .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
-                
                 VStack(alignment: .center, spacing: 0){
-                    LazyVGrid(columns: columns, spacing: 0){
-                        ForEach((0...listOfTiles.count-1), id: \.self) { num in
+                    LazyVGrid(columns: levelColumns, spacing: 0){
+                        ForEach((0...levelListOfTiles.count-1), id: \.self) { num in
                             
-                            if listOfTiles[num] == "b"{
+                            if levelListOfTiles[num] == wall{
                                 Image("tijolo")
                                     .resizable()
                                     .scaledToFill()
                                     .cornerRadius(5)
                             }
-                            else if listOfTiles[num] == "x"{
+                            else if levelListOfTiles[num] == grass{
                                 Image("grama")
                                     .resizable()
                                     .scaledToFill()
                             }
-                            else if listOfTiles[num] == "y"{
+                            else if levelListOfTiles[num] == place{
                                 Circle().foregroundColor(.yellow)
                             }
-                            else if listOfTiles[num] == "w"{
+                            else if levelListOfTiles[num] == box{
                                 Circle().foregroundColor(.blue)
                                 
                             }
-                            else if listOfTiles[num] == "m"{
+                            else if levelListOfTiles[num] == person{
                                 Circle().foregroundColor(.red)
                                 
                             }
                         }
                     }
+//MARK: game controls
                     
                     Button("Direita"){
-                        defineMoviment(actualPosition: startPosition, offset: 1)
                         defineMoviment(actualPosition: startPosition, offset: 1)
 
                     }
@@ -88,14 +106,18 @@ struct MyApp: App {
                     }
                     
                     Button("Cima"){
-                        defineMoviment(actualPosition: startPosition, offset: -8)
+                        defineMoviment(actualPosition: startPosition, offset: levelOffset * -1)
                     }
                     
                     Button("Baixo"){
-                       defineMoviment(actualPosition: startPosition, offset: +8)
+                       defineMoviment(actualPosition: startPosition, offset: levelOffset)
                     }
-                }
+                    Button("Refresh"){
+                    levelListOfTiles = Level2().level2Map
+                    startPosition = 13
+                    }
+                    Text(endGameText)
+                }//.padding(30)
             }
-        }
     }
 }
