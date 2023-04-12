@@ -10,7 +10,8 @@ import SwiftUI
 class Level2{
     
     let level2StartPosition: Int = 13
-    let upDownOffset: Int = 5
+    let level2Offset: Int = 5
+    let level2SpotsIndex: [Int] = []
     
     let level2Grid = [
         GridItem(.flexible(minimum: 30, maximum: 150), spacing: 0),

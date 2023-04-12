@@ -9,12 +9,16 @@ import SwiftUI
 
 struct LevelsView: View{
     var body: some View{
-        
-        NavigationView{
+            NavigationView{
+                ZStack{
+                    Image("sokobg")
+                        .resizable()
+                        .edgesIgnoringSafeArea(.all)
+                        .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
+                
+                NavigationLink("Tela de jogo", destination: GameView())
+            }
             
-            NavigationLink("Tela de jogo", destination: GameView())
-                .navigationBarBackButtonHidden(true)
-        }
-        
-    }
+        }.navigationBarBackButtonHidden(true)
+        .navigationViewStyle(StackNavigationViewStyle())    }
 }

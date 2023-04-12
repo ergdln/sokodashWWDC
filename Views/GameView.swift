@@ -15,30 +15,129 @@ struct GameView: View{
     let grass: String = "⬜️"
     let person: String = "🙋🏿"
     let wall: String = "⬛️"
-    let place: String = "🟨"
+    let spot: String = "🟨"
     
+  
     //Import the game map
-    @State var levelListOfTiles = Level1().level1Map
-    
+    @State var levelListOfTiles: [String] = Level3().level3Map
     //Import game map dimensions
-    let levelColumns = Level1().level1Grid
-    
+    let levelColumns = Level3().level3Grid
     //Import the star position in the map
-    @State var startPosition: Int = Level1().level1StartPosition
-    
+    @State var startPosition: Int = Level3().level3StartPosition
     //Import the offset to move up and down
-    let levelOffset = Level1().upDownOffset
+    let levelOffset = Level3().level3Offset
+    //Import the spots positions
+    let spotsIndex = Level3().level3SpotsIndex
     
     
     @State var endGameText: String = "voce ainda nao venceu"
+
     
-    //MARK: main game function
+    var body: some View{
+        
+        
+        ZStack{
+            Image("sokobg")
+                .resizable()
+                .edgesIgnoringSafeArea(.all)
+                .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
+            
+            VStack(alignment: .center, spacing: 10){
+                ZStack{
+                    Button("< Return"){
+                        levelListOfTiles = Level3().level3Map
+                        startPosition = 69
+                    }.frame(width: 500, alignment: .leading)
+                    
+                    Button("Refresh"){
+                        levelListOfTiles = Level3().level3Map
+                        startPosition = 69
+                    }.frame(width: 500, alignment: .trailing)
+                }
+                Spacer()
+                LazyVGrid(columns: levelColumns, spacing: 0){
+                    ForEach((0...levelListOfTiles.count-1), id: \.self) { num in
+                        
+                        if levelListOfTiles[num] == wall{
+                            Image("tijolo")
+                                .resizable()
+                                .scaledToFill()
+                        }
+                        else if levelListOfTiles[num] == grass{
+                            Image("grama")
+                                .resizable()
+                                .scaledToFill()
+                        }
+                        else if levelListOfTiles[num] == spot{
+                            Circle().foregroundColor(.yellow)
+                                .scaledToFill()
+                            
+                        }
+                        else if levelListOfTiles[num] == box{
+                            Circle().foregroundColor(.blue)
+                                .scaledToFill()
+                            
+                        }
+                        else if levelListOfTiles[num] == person{
+                            Circle().foregroundColor(.red)
+                                .scaledToFill()
+ 
+                        }
+                    }
+                }
+                
+                //MARK: game controls
+                HStack{
+                    Button("⬅️"){
+                        defineMoviment(actualPosition: startPosition, offset: -1)
+                    }
+                    
+                    
+                    VStack{
+                        Button("⬆️"){
+                            defineMoviment(actualPosition: startPosition, offset: levelOffset * -1)
+                        }
+                        
+                        Button("⬇️"){
+                            defineMoviment(actualPosition: startPosition, offset: levelOffset)
+                        }
+                    }
+                    
+                    Button("➡️"){
+                        defineMoviment(actualPosition: startPosition, offset: 1)
+                       
+                    }
+                    
+                    Text(endGameText)
+                    
+                   
+                }.frame(width: 500)
+                
+            }.frame(width: 500, height: 500)
+                .navigationBarBackButtonHidden(true)
+                .navigationViewStyle(StackNavigationViewStyle())
+
+        }
+    }
+}
+
+extension GameView{
+    
+    //MARK: Game Functions
+    
     func defineMoviment(actualPosition: Int, offset: Int){
-        //walking in free space
+        //walking in free space recursively
         if levelListOfTiles[actualPosition + offset] == grass {
             levelListOfTiles.swapAt(actualPosition + offset, actualPosition)
             startPosition = actualPosition + offset
-            defineMoviment(actualPosition: startPosition, offset: offset)
+            //recursion
+            if (levelListOfTiles[startPosition + offset] == box) || (levelListOfTiles[startPosition + offset] == wall) {
+                //while walking you hit something, so it's time to stop walking
+            }
+            else{
+                //keep moving
+                defineMoviment(actualPosition: startPosition, offset: offset)
+            }
         }
         //pushing a box
         else if levelListOfTiles[startPosition + offset] == box {
@@ -50,83 +149,30 @@ struct GameView: View{
             }
         }
         else{
-            print("nao consigo me mover")
+            //moving agains a wall or plate
+            //stop walking
         }
-        // isLevelCompleted(platesPosition: <#T##[Int]#>)
+        //checking if the level is done
+        if isLevelCompleted(platesPosition: spotsIndex){
+            print("venceuuuuuu")
+        }
     }
     
-    //MARK: checking if the level is completed
-    func isLevelCompleted(platesPosition: [Int]){
+    //MARK: function that checks if the level is completed
+    func isLevelCompleted(platesPosition: [Int]) -> Bool{
         if (platesPosition.allSatisfy{levelListOfTiles[$0] == box}){
             endGameText = "voce venceu"
+            return true
+        }
+        else{
+            return false
         }
     }
-    
-    
-    
-    
-    
-    var body: some View{
-        // GeometryReader{ geometry in
-        VStack(alignment: .center, spacing: 10){
-            
-            //MARK: game controls
-            HStack{
-                Button("Direita"){
-                    defineMoviment(actualPosition: startPosition, offset: 1)
-                    
-                }
-                
-                Button("Esquerda"){
-                    defineMoviment(actualPosition: startPosition, offset: -1)
-                }
-                
-                Button("Cima"){
-                    defineMoviment(actualPosition: startPosition, offset: levelOffset * -1)
-                }
-                
-                Button("Baixo"){
-                    defineMoviment(actualPosition: startPosition, offset: levelOffset)
-                }
-                Button("Refresh"){
-                    levelListOfTiles = Level2().level2Map
-                    startPosition = 13
-                }
-                Text(endGameText)
-            }
-            
-            
-            
-            LazyVGrid(columns: levelColumns, spacing: 0){
-                ForEach((0...levelListOfTiles.count-1), id: \.self) { num in
-                    
-                    if levelListOfTiles[num] == wall{
-                        Image("tijolo")
-                            .resizable()
-                            .scaledToFill()
-                            .cornerRadius(5)
-                    }
-                    else if levelListOfTiles[num] == grass{
-                        Image("grama")
-                            .resizable()
-                            .scaledToFill()
-                    }
-                    else if levelListOfTiles[num] == place{
-                        Circle().foregroundColor(.yellow)
-                    }
-                    else if levelListOfTiles[num] == box{
-                        Circle().foregroundColor(.blue)
-                        
-                    }
-                    else if levelListOfTiles[num] == person{
-                        Circle().foregroundColor(.red)
-                        
-                    }
-                }
-            }
-        } .aspectRatio(contentMode: .fit)
-    }
 }
+
+
+    
+    
 
 
 
