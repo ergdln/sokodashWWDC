@@ -18,7 +18,9 @@ struct GameView: View{
     let spot: String = "🟨"
     let empty: String = "🟫"
     
-  
+    
+    
+    @State var witchImage: String = "WITCH-LEFT"
     @State var levelListOfTiles: [String] = Level3().level3Map
     let levelColumns = Level3().level3Grid
     @State var startPosition: Int = Level3().level3StartPosition
@@ -55,7 +57,7 @@ struct GameView: View{
                     ForEach((0...levelListOfTiles.count-1), id: \.self) { num in
                         
                         if levelListOfTiles[num] == wall{
-                            Image("Brick")
+                            Image("BRICK")
                                 .resizable()
                                 .scaledToFill()
                         }
@@ -65,17 +67,20 @@ struct GameView: View{
                                 .scaledToFill()
                         }
                         else if levelListOfTiles[num] == spot{
-                            Circle().foregroundColor(.yellow)
+                            Image("SPOT")
+                                .resizable()
                                 .scaledToFill()
                             
                         }
                         else if levelListOfTiles[num] == box{
-                            Circle().foregroundColor(.blue)
+                            Image("BOX")
+                                .resizable()
                                 .scaledToFill()
                             
                         }
                         else if levelListOfTiles[num] == person{
-                            Circle().foregroundColor(.red)
+                            Image(witchImage)
+                                .resizable()
                                 .scaledToFill()
  
                         }
@@ -91,6 +96,7 @@ struct GameView: View{
                 //MARK: game controls
                 HStack{
                     Button("⬅️"){
+                        witchImage = "WITCH-LEFT"
                         defineMoviment(actualPosition: startPosition, offset: -1)
                     }
                     
@@ -106,6 +112,7 @@ struct GameView: View{
                     }
                     
                     Button("➡️"){
+                        witchImage = "WITCH-RIGHT"
                         defineMoviment(actualPosition: startPosition, offset: 1)
                        
                     }
