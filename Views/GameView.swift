@@ -16,17 +16,13 @@ struct GameView: View{
     let person: String = "🙋🏿"
     let wall: String = "⬛️"
     let spot: String = "🟨"
+    let empty: String = "🟫"
     
   
-    //Import the game map
     @State var levelListOfTiles: [String] = Level3().level3Map
-    //Import game map dimensions
     let levelColumns = Level3().level3Grid
-    //Import the star position in the map
     @State var startPosition: Int = Level3().level3StartPosition
-    //Import the offset to move up and down
     let levelOffset = Level3().level3Offset
-    //Import the spots positions
     let spotsIndex = Level3().level3SpotsIndex
     
     
@@ -59,12 +55,12 @@ struct GameView: View{
                     ForEach((0...levelListOfTiles.count-1), id: \.self) { num in
                         
                         if levelListOfTiles[num] == wall{
-                            Image("tijolo")
+                            Image("Brick")
                                 .resizable()
                                 .scaledToFill()
                         }
                         else if levelListOfTiles[num] == grass{
-                            Image("grama")
+                            Image("GRASS")
                                 .resizable()
                                 .scaledToFill()
                         }
@@ -80,6 +76,12 @@ struct GameView: View{
                         }
                         else if levelListOfTiles[num] == person{
                             Circle().foregroundColor(.red)
+                                .scaledToFill()
+ 
+                        }
+                        else if levelListOfTiles[num] == empty{
+                            Image("empty")
+                                .resizable()
                                 .scaledToFill()
  
                         }
@@ -113,7 +115,7 @@ struct GameView: View{
                    
                 }.frame(width: 500)
                 
-            }.frame(width: 500, height: 500)
+            }.frame(width: 600, height: 600)
                 .navigationBarBackButtonHidden(true)
                 .navigationViewStyle(StackNavigationViewStyle())
 
