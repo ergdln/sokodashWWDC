@@ -7,24 +7,12 @@
 
 import SwiftUI
 
-class Level{
-
-    let levelStartPosition: Int = 0
-    let levelOffset: Int = 0
-    let spotsIndex: [Int] = []
-    let levelGrid: [GridItem] = []
-    let levelMap: [Character] = []
-    
-    init(levelStartPosition: Int, levelOffset: Int, platesIndex: [Int], levelGrid: [GridItem], levelMap: [Character]) {
-    }
-}
-
 class Level1{
     
     //where the person starts in this level
     let level1StartPosition = 70
-    let upDownOffset: Int = 8
-    let spotsIndex: [Int] = [9, 35, 46, 57]
+    let level1Offset: Int = 8
+    let level1SpotsIndex: [Int] = [9, 35, 46, 57]
     
     //number of columns
     let level1Grid = [

@@ -8,7 +8,13 @@
 import Foundation
 import SwiftUI
 
-struct GameView: View{
+
+struct Level2View: View{
+    @Environment(\.dismiss) var dismiss
+    
+    //witch first image
+    @State var witchImage: String = "WITCH-LEFT"
+    
     
     //Rename de map elements
     let box: String = "📦"
@@ -19,43 +25,38 @@ struct GameView: View{
     let empty: String = "🟫"
     
     
-    
-    @State var witchImage: String = "WITCH-LEFT"
-    @State var levelListOfTiles: [String] = Level3().level3Map
-    let levelColumns = Level3().level3Grid
-    @State var startPosition: Int = Level3().level3StartPosition
-    let levelOffset = Level3().level3Offset
-    let spotsIndex = Level3().level3SpotsIndex
+    //level information
+    @State var levelListOfTiles: [String] = Level2().level2Map
+    let levelColumns = Level2().level2Grid
+    @State var startPosition: Int = Level2().level2StartPosition
+    let levelOffset = Level2().level2Offset
+    let spotsIndex = Level2().level2SpotsIndex
     
     
     @State var endGameText: String = "voce ainda nao venceu"
-
+    
     
     var body: some View{
-        
-        
         ZStack{
-            Image("sokobg")
+            Image("BACKGROUND")
                 .resizable()
-                .edgesIgnoringSafeArea(.all)
-                .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
+                .aspectRatio(contentMode: .fill)
+                .frame(width: UIScreen.main.bounds.width * 1.5, height: UIScreen.main.bounds.height * 1.5)
             
             VStack(alignment: .center, spacing: 10){
                 ZStack{
                     Button("< Return"){
-                        levelListOfTiles = Level3().level3Map
-                        startPosition = 69
+                        dismiss()
                     }.frame(width: 500, alignment: .leading)
                     
                     Button("Refresh"){
-                        levelListOfTiles = Level3().level3Map
-                        startPosition = 69
+                        levelListOfTiles = Level2().level2Map
+                        startPosition = 5
                     }.frame(width: 500, alignment: .trailing)
                 }
                 Spacer()
                 LazyVGrid(columns: levelColumns, spacing: 0){
                     ForEach((0...levelListOfTiles.count-1), id: \.self) { num in
-                        
                         if levelListOfTiles[num] == wall{
                             Image("BRICK")
                                 .resizable()
@@ -70,70 +71,76 @@ struct GameView: View{
                             Image("SPOT")
                                 .resizable()
                                 .scaledToFill()
-                            
                         }
                         else if levelListOfTiles[num] == box{
-                            Image("BOX")
+                            Image("CAULDRON")
                                 .resizable()
                                 .scaledToFill()
-                            
                         }
                         else if levelListOfTiles[num] == person{
                             Image(witchImage)
                                 .resizable()
                                 .scaledToFill()
- 
                         }
                         else if levelListOfTiles[num] == empty{
                             Image("empty")
                                 .resizable()
                                 .scaledToFill()
- 
                         }
                     }
                 }
                 
                 //MARK: game controls
                 HStack{
-                    Button("⬅️"){
+                    Button(action:{
                         witchImage = "WITCH-LEFT"
                         defineMoviment(actualPosition: startPosition, offset: -1)
+                    }){
+                        Image("LEFT")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 60, height: 60)
                     }
                     
                     
                     VStack{
-                        Button("⬆️"){
+                        Button(action:{
                             defineMoviment(actualPosition: startPosition, offset: levelOffset * -1)
+                        }){
+                            Image("UP")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 60, height: 60)
+                            
                         }
-                        
-                        Button("⬇️"){
+                        Button(action:{
                             defineMoviment(actualPosition: startPosition, offset: levelOffset)
+                        }){
+                            Image("DOWN")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 60, height: 60)
                         }
                     }
-                    
-                    Button("➡️"){
+                    Button(action:{
                         witchImage = "WITCH-RIGHT"
                         defineMoviment(actualPosition: startPosition, offset: 1)
-                       
+                    }){
+                        Image("RIGHT")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 60, height: 60)
                     }
-                    
-                    Text(endGameText)
-                    
-                   
                 }.frame(width: 500)
-                
             }.frame(width: 600, height: 600)
                 .navigationBarBackButtonHidden(true)
                 .navigationViewStyle(StackNavigationViewStyle())
-
         }
     }
 }
 
-extension GameView{
-    
+extension Level2View{
     //MARK: Game Functions
-    
     func defineMoviment(actualPosition: Int, offset: Int){
         //walking in free space recursively
         if levelListOfTiles[actualPosition + offset] == grass {
@@ -180,8 +187,8 @@ extension GameView{
 }
 
 
-    
-    
+
+
 
 
 

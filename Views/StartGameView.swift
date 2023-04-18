@@ -6,55 +6,34 @@
 //
 
 import SwiftUI
+import AVFoundation
 
 struct StartGameView: View{
     
+    @State var audioPlayer: AVAudioPlayer!
     @State var animatingI = false
     @State var animatingJ = true
     
     var body: some View{
         
         NavigationView{
-            
-            VStack{
-                ZStack{
-                Group{
-                    Image("WITCH-START")
-                        .resizable()
-                        .scaledToFit()
-                    // .aspectRatio(contentMode: .fill)
-                        .frame(width: 400, height: 400)
-                        .offset(x: {
-                            if animatingJ && !animatingI {
-                                return -50
-                            }  else if animatingJ && animatingI {
-                                return -20
-                            } else {
-                                return 30
-                            }
-                        }(),
-                                y: {
-                            if animatingJ && !animatingI {
-                                return 40
-                            }  else if animatingJ && animatingI {
-                                return -40
-                            } else {
-                                return 40
-                            }
-                        }())
-                        .animation(.easeInOut(duration: 1.5).repeatForever(), value: animatingJ)
-                        .onAppear {
-                            animatingJ.toggle()
-                        }
-                        .onChange(of: animatingJ) { _ in
-                            animatingI.toggle()
-                            animatingJ.toggle()
+            ZStack{
+                Image("BACKGROUND")
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: UIScreen.main.bounds.width * 1.5, height: UIScreen.main.bounds.height * 1.5)
+                
+                
+                VStack{
+                    ZStack{
+                        
+                        Group{
                             
-                            Image("BOX")
+                            Image("CAULDRON-CLEAN")
                                 .resizable()
-                                .scaledToFit()
-                            // .aspectRatio(contentMode: .fill)
-                                .frame(width: 100, height: 100)// -130, -150
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 300, height: 300)
+                                .rotationEffect(.radians(-0.2))
                                 .offset(x: {
                                     if animatingJ && !animatingI {
                                         return -140
@@ -70,100 +49,116 @@ struct StartGameView: View{
                                     }  else if animatingJ && animatingI {
                                         return -100
                                     } else {
-                                        return -110
+                                        return -400
                                     }
                                 }())
                                 .animation(.easeInOut(duration: 3).repeatForever(), value: animatingJ)
+                            Image("CAULDRON-CLEAN")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 300, height: 300)
+                                .rotationEffect(.radians(-0.2))
+                                .offset(x: {
+                                    if animatingJ && !animatingI {
+                                        return -115
+                                    }  else if animatingJ && animatingI {
+                                        return -130
+                                    } else {
+                                        return -400
+                                    }
+                                }(),
+                                        y: {
+                                    if animatingJ && !animatingI {
+                                        return 200
+                                    }  else if animatingJ && animatingI {
+                                        return 160
+                                    } else {
+                                        return 170
+                                    }
+                                }())
+                                .animation(.easeInOut(duration: 3).repeatForever(), value: animatingJ)
+                            Image("CAULDRON-CLEAN")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 300, height: 300)
+                                .rotationEffect(.radians(0.3))
+                                .offset(x: {
+                                    if animatingJ && !animatingI {
+                                        return 120
+                                    }  else if animatingJ && animatingI {
+                                        return 130
+                                    } else {
+                                        return 400
+                                    }
+                                }(),
+                                        y: {
+                                    if animatingJ && !animatingI {
+                                        return 140
+                                    }  else if animatingJ && animatingI {
+                                        return 160
+                                    } else {
+                                        return -100
+                                    }
+                                }())
+                                .animation(.easeInOut(duration: 3).repeatForever(), value: animatingJ)
+                            
+                            Image("WITCH-START")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 400, height: 400)
+                                .offset(x: {
+                                    if animatingJ && !animatingI {
+                                        return 20
+                                    }  else if animatingJ && animatingI {
+                                        return -20
+                                    } else {
+                                        return 35
+                                    }
+                                }(),
+                                        y: {
+                                    if animatingJ && !animatingI {
+                                        return 50
+                                    }  else if animatingJ && animatingI {
+                                        return 60
+                                    } else {
+                                        return 30
+                                    }
+                                }())
+                                .animation(.easeInOut(duration: 3.5).repeatForever(), value: animatingJ)
+                                .onAppear {
+                                    animatingJ.toggle()
+                                }
+                                .onChange(of: animatingJ) { _ in
+                                    animatingI.toggle()
+                                    animatingJ.toggle()
+                                    
+                                }
                         }
+                    }
+                    
+                    NavigationLink(destination: LevelsView()){
+                        
+                        VStack{
+                            
+                            Text("SOKODASH")
+                            
+                            Text("Put all the circles in the correct circle and then CIRCLE")
+                            
+                            NavigationLink(destination: LevelsView()){
+                                Text("OLA")
+                                
+                            }.navigationBarBackButtonHidden(true)
                         }
+                    }
+                }.onAppear {
+                    //                let sound = Bundle.main.path(forResource: "backMusic", ofType: "mp3")
+                    //       //         self.audioPlayer = try! AVAudioPlayer(contentsOf: URL(fileURLWithPath: sound!))
+                    //                audioPlayer.play()
+                    //                audioPlayer.numberOfLoops = -1
                 }
                 
-                NavigationLink(destination: LevelsView()){
-                    
-                    VStack{
-                        
-                        Text("SOKODASH")
-                        
-                        Text("Put all the circles in the correct circle and then CIRCLE")
-                        
-                        NavigationLink(destination: LevelsView()){
-                            Text("OLA")
-                            
-                        }.navigationBarBackButtonHidden(true)
-                    }
-                }
             }
         }.navigationViewStyle(StackNavigationViewStyle())
         
     }
-    //                Image("sokobg")
-    //                    .resizable()
-    //                    .edgesIgnoringSafeArea(.all)
-    //                    .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
-    //
-    //                Image("grama")
-    //                    .resizable()
-    //                    .scaledToFit()
-    //                // .aspectRatio(contentMode: .fill)
-    //                    .frame(width: 50, height: 50)
-    //                    .offset(x: {
-    //                        if animatingJ && !animatingI {
-    //                            return -100
-    //                        }  else if animatingJ && animatingI {
-    //                            return -10
-    //                        } else {
-    //                            return 100
-    //                        }
-    //                    }(),
-    //                            y: {
-    //                        if animatingJ && !animatingI {
-    //                            return 0
-    //                        }  else if animatingJ && animatingI {
-    //                            return 0
-    //                        } else {
-    //                            return 0
-    //                        }
-    //                    }())
-    //                    .animation(.easeInOut(duration: 1.5).repeatForever(), value: animatingJ)
-    //                    .onAppear {
-    //                        animatingJ.toggle()
-    //                    }
-    //                    .onChange(of: animatingJ) { _ in
-    //                        animatingI.toggle()
-    //                        animatingJ.toggle()
-    //
-    //                        Image("grama")
-    //                            .resizable()
-    //                            .scaledToFit()
-    //                        // .aspectRatio(contentMode: .fill)
-    //                            .frame(width: 50, height: 50)
-    //                            .offset(x: {
-    //                                if animatingJ && !animatingI {
-    //                                    return -100
-    //                                }  else if animatingJ && animatingI {
-    //                                    return -10
-    //                                } else {
-    //                                    return -100
-    //                                }
-    //                            }(),
-    //                                    y: {
-    //                                if animatingJ && !animatingI {
-    //                                    return 0
-    //                                }  else if animatingJ && animatingI {
-    //                                    return 0
-    //                                } else {
-    //                                    return -120
-    //                                }
-    //                            }())
-    //                            .animation(.easeInOut(duration: 1.5).repeatForever(), value: animatingJ)
-    //                            .onAppear {
-    //                                animatingJ.toggle()
-    //                            }
-    //                            .onChange(of: animatingJ) { _ in
-    //                                animatingI.toggle()
-    //                                animatingJ.toggle()
-    //
-    //
-    //
-    //
 }
