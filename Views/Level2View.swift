@@ -10,6 +10,7 @@ import SwiftUI
 
 
 struct Level2View: View{
+    @State private var isGameOver = false
     @Environment(\.dismiss) var dismiss
     
     //witch first image
@@ -45,14 +46,16 @@ struct Level2View: View{
             
             VStack(alignment: .center, spacing: 10){
                 ZStack{
-                    Button("< Return"){
-                        dismiss()
-                    }.frame(width: 500, alignment: .leading)
-                    
-                    Button("Refresh"){
+                    Button(action:{
                         levelListOfTiles = Level2().level2Map
-                        startPosition = 5
+                        startPosition = Level2().level2StartPosition
+                    }){
+                       Image("REFRESH")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 100, height: 50)
                     }.frame(width: 500, alignment: .trailing)
+                        .disabled(isGameOver)
                 }
                 Spacer()
                 LazyVGrid(columns: levelColumns, spacing: 0){
@@ -100,7 +103,7 @@ struct Level2View: View{
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width: 60, height: 60)
-                    }
+                    }.disabled(isGameOver)
                     
                     
                     VStack{
@@ -112,7 +115,7 @@ struct Level2View: View{
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: 60, height: 60)
                             
-                        }
+                        }.disabled(isGameOver)
                         Button(action:{
                             defineMoviment(actualPosition: startPosition, offset: levelOffset)
                         }){
@@ -121,7 +124,7 @@ struct Level2View: View{
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: 60, height: 60)
                         }
-                    }
+                    }.disabled(isGameOver)
                     Button(action:{
                         witchImage = "WITCH-RIGHT"
                         defineMoviment(actualPosition: startPosition, offset: 1)
@@ -130,11 +133,23 @@ struct Level2View: View{
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width: 60, height: 60)
-                    }
+                    }.disabled(isGameOver)
                 }.frame(width: 500)
             }.frame(width: 600, height: 600)
                 .navigationBarBackButtonHidden(true)
                 .navigationViewStyle(StackNavigationViewStyle())
+            
+            if isGameOver{
+                ZStack{
+                    Rectangle()
+                        .frame(width: UIScreen.main.bounds.width * 1.5, height: UIScreen.main.bounds.height * 1.5)
+                            .background(.black)
+                            .opacity(0.5)
+                    NavigationLink(destination: Level1View()) {
+                        Text("Level2")
+                    }.navigationBarBackButtonHidden(true)
+                }
+            }
         }
     }
 }
@@ -170,8 +185,7 @@ extension Level2View{
         }
         //checking if the level is done
         if isLevelCompleted(platesPosition: spotsIndex){
-            print("venceuuuuuu")
-        }
+            self.isGameOver.toggle()        }
     }
     
     //MARK: function that checks if the level is completed

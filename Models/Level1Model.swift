@@ -10,7 +10,7 @@ import SwiftUI
 class Level1{
     
     //where the person starts in this level
-    let level1StartPosition = 70
+    let level1StartPosition: Int = 70
     let level1Offset: Int = 8
     let level1SpotsIndex: [Int] = [9, 35, 46, 57]
     

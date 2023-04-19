@@ -16,7 +16,6 @@ struct Level1View: View{
     //witch first image
     @State var witchImage: String = "WITCH-LEFT"
     
-    
     //Rename de map elements
     let box: String = "📦"
     let grass: String = "⬜️"
@@ -25,16 +24,16 @@ struct Level1View: View{
     let spot: String = "🟨"
     let empty: String = "🟫"
     
-    
     //level information
     @State var levelListOfTiles: [String] = Level1().level1Map
     let levelColumns = Level1().level1Grid
     @State var startPosition: Int = Level1().level1StartPosition
     let levelOffset = Level1().level1Offset
-    let spotsIndex = Level1().level1SpotsIndex
+    let spotsIndex: [Int] = Level1().level1SpotsIndex
     
     
     @State var endGameText: String = "voce ainda nao venceu"
+    
     
     
     var body: some View{
@@ -46,10 +45,6 @@ struct Level1View: View{
             
             VStack(alignment: .center, spacing: 10){
                 ZStack{
-                    Button("< Return"){
-                        dismiss()
-                    }.frame(width: 500, alignment: .leading)
-                    
                     Button(action:{
                         levelListOfTiles = Level1().level1Map
                         startPosition = 70
@@ -57,8 +52,9 @@ struct Level1View: View{
                        Image("REFRESH")
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
-                                .frame(width: 60, height: 60)
-                    }
+                                .frame(width: 100, height: 50)
+                    }.frame(width: 500, alignment: .trailing)
+                        .disabled(isGameOver)
                 }
                 Spacer()
                 LazyVGrid(columns: levelColumns, spacing: 0){
@@ -106,9 +102,8 @@ struct Level1View: View{
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width: 60, height: 60)
-                    }
-                    
-                    
+                    }.disabled(isGameOver)
+
                     VStack{
                         Button(action:{
                             defineMoviment(actualPosition: startPosition, offset: levelOffset * -1)
@@ -118,7 +113,7 @@ struct Level1View: View{
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: 60, height: 60)
                             
-                        }
+                        }.disabled(isGameOver)
                         Button(action:{
                             defineMoviment(actualPosition: startPosition, offset: levelOffset)
                         }){
@@ -127,7 +122,7 @@ struct Level1View: View{
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: 60, height: 60)
                         }
-                    }
+                    }.disabled(isGameOver)
                     Button(action:{
                         witchImage = "WITCH-RIGHT"
                         defineMoviment(actualPosition: startPosition, offset: 1)
@@ -136,11 +131,23 @@ struct Level1View: View{
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width: 60, height: 60)
-                    }
+                    }.disabled(isGameOver)
                 }.frame(width: 500)
             }.frame(width: 600, height: 600)
                 .navigationBarBackButtonHidden(true)
                 .navigationViewStyle(StackNavigationViewStyle())
+            
+            if isGameOver{
+                ZStack{
+                    Rectangle()
+                        .frame(width: UIScreen.main.bounds.width * 1.5, height: UIScreen.main.bounds.height * 1.5)
+                        .background(.black)
+                        .opacity(0.5)
+                    NavigationLink(destination: Level3View()) {
+                        Text("Level3")
+                    }.navigationBarBackButtonHidden(true)
+                }
+            }
         }
     }
 }
