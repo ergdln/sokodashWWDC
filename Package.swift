@@ -8,19 +8,19 @@ import PackageDescription
 import AppleProductTypes
 
 let package = Package(
-    name: "sokoban",
+    name: "Liva's Puzzle",
     platforms: [
         .iOS("15.2")
     ],
     products: [
         .iOSApplication(
-            name: "sokoban",
+            name: "Liva's Puzzle",
             targets: ["AppModule"],
             bundleIdentifier: "br.ufpe.cin.academy.egln.sokoban",
             teamIdentifier: "275GWT29UT",
             displayVersion: "1.0",
             bundleVersion: "1",
-            appIcon: .placeholder(icon: .magicWand),
+            appIcon: .asset("AppIcon"),
             accentColor: .presetColor(.purple),
             supportedDeviceFamilies: [
                 .pad,

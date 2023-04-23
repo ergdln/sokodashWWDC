@@ -15,9 +15,10 @@ struct FinalView: View {
                 .aspectRatio(contentMode: .fill)
                 .frame(width: UIScreen.main.bounds.width * 1.5, height: UIScreen.main.bounds.height * 1.5)
             
-            Text("You did it!")
-                .font(.system(size: 156))
-                .foregroundColor(.white)
+            Image("SECRETOFTHEUNIVERSE")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 700, height: 700)
         }
     }
 }

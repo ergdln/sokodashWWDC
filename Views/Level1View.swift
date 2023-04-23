@@ -10,6 +10,8 @@ import SwiftUI
 
 
 struct Level1View: View{
+    
+    //MARK: VARIABLES 
     @State private var isGameOver = false
     @Environment(\.dismiss) var dismiss
     
@@ -32,10 +34,9 @@ struct Level1View: View{
     let spotsIndex: [Int] = Level1().level1SpotsIndex
     
     
-    @State var endGameText: String = "voce ainda nao venceu"
     
     
-    
+    //MARK: THE GAME VIEW
     var body: some View{
         ZStack{
             Image("BACKGROUND")
@@ -57,6 +58,8 @@ struct Level1View: View{
                         .disabled(isGameOver)
                 }
                 Spacer()
+                
+                //MARK: GAME GRID
                 LazyVGrid(columns: levelColumns, spacing: 0){
                     ForEach((0...levelListOfTiles.count-1), id: \.self) { num in
                         if levelListOfTiles[num] == wall{
@@ -137,15 +140,31 @@ struct Level1View: View{
                 .navigationBarBackButtonHidden(true)
                 .navigationViewStyle(StackNavigationViewStyle())
             
+            //MARK: Changes the screen when the game is over
             if isGameOver{
                 ZStack{
-                    Rectangle()
-                        .frame(width: UIScreen.main.bounds.width * 1.5, height: UIScreen.main.bounds.height * 1.5)
-                        .background(.black)
-                        .opacity(0.5)
-                    NavigationLink(destination: Level3View()) {
-                        Text("Level3")
-                    }.navigationBarBackButtonHidden(true)
+                    NavigationView{
+                        ZStack{
+                            Image("BACKGROUND")
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: UIScreen.main.bounds.width * 1.5, height: UIScreen.main.bounds.height * 1.5)
+                            
+                            VStack{
+                                Image("L2COMPLETED")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 700, height: 700)
+                                
+                                NavigationLink(destination: Level3View()){
+                                    Image("OK")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: 100, height: 50)
+                                }.frame(width:500, alignment: .trailing)
+                            }
+                        }.navigationBarBackButtonHidden(true)
+                    }.navigationViewStyle(StackNavigationViewStyle())
                 }
             }
         }
@@ -153,11 +172,7 @@ struct Level1View: View{
 }
 
 extension Level1View{
-    
-    
-    
-    
-    
+
     //MARK: Game Functions
     func defineMoviment(actualPosition: Int, offset: Int){
         //walking in free space recursively
@@ -195,7 +210,7 @@ extension Level1View{
     //MARK: function that checks if the level is completed
     func isLevelCompleted(platesPosition: [Int]) -> Bool{
         if (platesPosition.allSatisfy{levelListOfTiles[$0] == box}){
-            endGameText = "voce venceu"
+            
             return true
         }
         else{
